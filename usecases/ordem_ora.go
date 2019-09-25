@@ -69,6 +69,8 @@ func (r *RepoOracle) InsertOS(os *entity.OrdemServico) error {
 	var NrOrdem string
 	_, err = tx.ExecContext(ctx, sqlP, os.NrCPF, os.Descricao, os.Contato,
 		sql.Out{Dest: &ErroOut}, sql.Out{Dest: &NrOrdem})
+	
+	log.Println(NrOrdem)
 
 	if err != nil {
 		tx.Rollback()
