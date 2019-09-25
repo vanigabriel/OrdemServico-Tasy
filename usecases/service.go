@@ -11,6 +11,14 @@ type Service struct {
 	repo Repository
 }
 
+//NewService create new service
+func NewService(r Repository) *Service {
+	return &Service{
+		repo: r,
+	}
+}
+
+//InsertOS insere OS
 func (s *Service) InsertOS(os *entity.OrdemServico) error {
 	_, err := govalidator.ValidateStruct(os)
 	if err != nil {
