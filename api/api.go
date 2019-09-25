@@ -11,6 +11,7 @@ import (
 
 func SetupRouter(service *ordem.Service) *gin.Engine {
 	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
 
 	r.POST("/ordemservico", PostOS(service))
 
