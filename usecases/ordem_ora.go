@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/vanigabriel/OrdemServico-Tasy/entity"
+	_ "gopkg.in/goracle.v2"
 )
 
 // RepoOracle define struct
