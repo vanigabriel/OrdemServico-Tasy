@@ -7,6 +7,7 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
 
 # Features
 - Tratativa de erros;
+- Dockerfile;
 - Princípios de Clean Architecture;
 - Govalidator para conferir campos obrigatórios;
 - Log salvo em arquivo;
@@ -17,9 +18,13 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
 - POST /ordemservico : insere ordem de serviço;
 
 # Atenção:
-- Necessário preencher o .env com os dados de conexão com o banco de dados;
-- Necessário criar a procedure que se encontra no /sql para que o sistema funcione;
+ Necessário preencher o .env com os dados de conexão com o banco de dados;
+ Necessário criar a procedure que se encontra no /sql para que o sistema funcione;
+ Para funcionar com o Oracle, é necessário ter 3 arquivos baixados para conexão:
+- oracle-instantclient19.3-basic-19.3.0.0.0-1.x86_64.rpm 
+- oracle-instantclient19.3-sqlplus-19.3.0.0.0-1.x86_64.rpm 
+- oracle-instantclient19.3-devel-19.3.0.0.0-1.x86_64.rpm 
+ Os mesmos se encontram no seguinte link: http://yum.oracle.com/repo/OracleLinux/OL7/oracle/instantclient/x86_64/index.html
  
 # Backlog
-- Docker
 - Possibilidade de inserir anexos, utilizando a configuração do Tasy;
