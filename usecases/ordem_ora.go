@@ -17,6 +17,11 @@ type RepoOracle struct {
 	db *sql.DB
 }
 
+func NewRepository() *RepoOracle {
+	var r RepoOracle
+	return &r
+}
+
 func (r *RepoOracle) initDB() error {
 	var dberr error
 
