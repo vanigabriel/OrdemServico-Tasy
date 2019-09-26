@@ -129,5 +129,36 @@ func (r *RepoOracle) InsertAnexos(ordem string, filename string, file []byte) er
 		log.Fatal(err)
 	}
 
+	// Insere referência no banco de dados
+	tx, err := r.db.Begin()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	sqlP := `insert into MAN_ORDEM_SERV_ARQ (nr_sequencia, nr_seq_ordem, dt_atualizacao, nm_usuario, ds_arquivo, ie_anexar_email)
+				select
+					man_ordem_serv_arq_seq.nextval,
+					:col1,
+					sysdate,
+					'Integrado Site',
+					:col2,
+					'S'
+				from dual`
+
+	_, err = tx.Exec(sqlP, ordem, filepath+"/"+filename)
+
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
 	return nil
 }
