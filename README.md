@@ -7,7 +7,8 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
 
 # Features
 - Tratativa de erros;
-- Dockerfile;
+- Busca de usuário por CPF;
+- Docker;
 - Princípios de Clean Architecture;
 - Govalidator para conferir campos obrigatórios;
 - Log salvo em arquivo;
@@ -16,6 +17,7 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
 
 # Rotas
 - POST /ordemservico : insere ordem de serviço;
+- POST /ordemservico/:os/files : insere anexos na ordem de serviço os;
 
 # Atenção:
  Necessário preencher o .env com os dados de conexão com o banco de dados;
@@ -27,4 +29,4 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
  Os mesmos se encontram no seguinte link: http://yum.oracle.com/repo/OracleLinux/OL7/oracle/instantclient/x86_64/index.html
  
 # Backlog
-- Possibilidade de inserir anexos, utilizando a configuração do Tasy;
+- Usuário/Setor/Equipamento padrão quando não localizar o do CPF;
