@@ -6,7 +6,6 @@ import (
 	"log"
 	"mime"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/vanigabriel/OrdemServico-Tasy/entity"
@@ -18,7 +17,7 @@ func SetupRouter(service *ordem.Service) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 
 	r.POST("/ordemservico", PostOS(service))
-	r.POST("/ordemservico/files", PostFiles)
+	r.POST("/ordemservico/:os/files", PostFiles(service))
 
 	return r
 }
@@ -36,56 +35,65 @@ func PostOS(service *ordem.Service) func(c *gin.Context) {
 			return
 		}
 
-		err = service.InsertOS(&OS)
+		ordem, err := service.InsertOS(&OS)
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
+		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros.", "numero": ordem})
 	}
 }
 
-func PostFiles(c *gin.Context) {
-	multipart, err := c.Request.MultipartReader()
-	if err != nil {
-		log.Fatalln("Failed to create MultipartReader", err)
+func PostFiles(service *ordem.Service) func(c *gin.Context) {
+	return func(c *gin.Context) {
+
+		var ordem string
+		ordem = c.Param("os")
+		if len(ordem) == 0 {
+			log.Println("Número da OS não informada")
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Parametro OS não informado"})
+			return
+		}
+
+		multipart, err := c.Request.MultipartReader()
+		if err != nil {
+			log.Println(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		for {
+			mimePart, err := multipart.NextPart()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Println(err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+			_, params, err := mime.ParseMediaType(mimePart.Header.Get("Content-Disposition"))
+			if err != nil {
+				log.Println(err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			//Get File
+			file, err := ioutil.ReadAll(mimePart)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = service.InsertAnexos(ordem, params["filename"], file)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+		}
+
+		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
 	}
-
-	for {
-		mimePart, err := multipart.NextPart()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Printf("Error reading multipart section: %v", err)
-			break
-		}
-		_, params, err := mime.ParseMediaType(mimePart.Header.Get("Content-Disposition"))
-		if err != nil {
-			log.Printf("Invalid Content-Disposition: %v", err)
-			break
-		}
-
-		//Create File
-		f, err := os.OpenFile(params["filename"], os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-
-		slurp, err := ioutil.ReadAll(mimePart)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		_, err = f.Write(slurp)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
 }
