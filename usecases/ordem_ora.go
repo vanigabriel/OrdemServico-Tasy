@@ -104,7 +104,7 @@ func (r *RepoOracle) InsertAnexos(ordem string, filename string, file []byte) er
 
 	sqlS := `select a.vl_parametro
 			from FUNCAO_PARAMETRO a
-			where a.nr_sequencia = 8 and a.cd_funcao = 299;`
+			where a.nr_sequencia = 8 and a.cd_funcao = 299`
 
 	row := r.db.QueryRow(sqlS)
 	err = row.Scan(&filepath)
