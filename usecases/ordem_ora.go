@@ -45,19 +45,19 @@ func (r *RepoOracle) closeDB() {
 }
 
 // InsertOS insere OS
-func (r *RepoOracle) InsertOS(os *entity.OrdemServico) error {
+func (r *RepoOracle) InsertOS(os *entity.OrdemServico) (string, error) {
 	log.Println("Iniciando InsertOS")
 
 	err := r.initDB()
 	if err != nil {
 		log.Println(err)
-		return err
+		return "", err
 	}
 
 	tx, err := r.db.Begin()
 	if err != nil {
 		log.Println(err)
-		return err
+		return "", err
 	}
 
 	ctx := context.TODO()
@@ -69,25 +69,64 @@ func (r *RepoOracle) InsertOS(os *entity.OrdemServico) error {
 	var NrOrdem string
 	_, err = tx.ExecContext(ctx, sqlP, os.NrCPF, os.Descricao, os.Contato,
 		sql.Out{Dest: &ErroOut}, sql.Out{Dest: &NrOrdem})
-	
-	log.Println(NrOrdem)
 
 	if err != nil {
 		tx.Rollback()
 		log.Println(err)
-		return err
+		return "", err
 	}
 
 	if ErroOut != "" {
 		tx.Rollback()
 		log.Println(ErroOut)
-		return errors.New(ErroOut)
+		return "", errors.New(ErroOut)
 	}
 
 	err = tx.Commit()
 	if err != nil {
 		log.Println(err)
+		return "", err
+	}
+
+	return NrOrdem, nil
+}
+
+// InsertAnexos recebe o número da OS, o nome do arquivo e o arquivo
+func (r *RepoOracle) InsertAnexos(ordem string, filename string, file []byte) error {
+	// Primeira coisa a ser feito é recuperar o caminho onde será salvo o arquivo
+	err := r.initDB()
+	if err != nil {
+		log.Println(err)
 		return err
+	}
+
+	var filepath string
+
+	sqlS := `select a.vl_parametro
+			from FUNCAO_PARAMETRO a
+			where a.nr_sequencia = 8 and a.cd_funcao = 299;`
+
+	row := r.db.QueryRow(sqlS)
+	err = row.Scan(&filepath)
+	if err != nil {
+		return err
+	}
+
+	filepath = filepath + "OS_" + ordem
+
+	//Create path if not exists
+	os.MkdirAll(filepath, os.ModePerm)
+
+	//Create File
+	f, err := os.OpenFile(filepath+"/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	_, err = f.Write(file)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return nil

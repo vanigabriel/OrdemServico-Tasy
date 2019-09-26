@@ -17,7 +17,11 @@ func NewInmemRepository() *RepoInMem {
 	}
 }
 
-func (r *RepoInMem) InsertOS(os *entity.OrdemServico) error {
-	r.inMem[os.Descricao] = os
+func (r *RepoInMem) InsertOS(os *entity.OrdemServico) (string, error) {
+	r.inMem[os.NrCPF] = os
+	return os.NrCPF, nil
+}
+
+func (r *RepoInMem) InsertAnexos(ordem string, filename string, file []byte) error {
 	return nil
 }

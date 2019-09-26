@@ -19,12 +19,16 @@ func NewService(r Repository) *Service {
 }
 
 //InsertOS insere OS
-func (s *Service) InsertOS(os *entity.OrdemServico) error {
+func (s *Service) InsertOS(os *entity.OrdemServico) (string, error) {
 	_, err := govalidator.ValidateStruct(os)
 	if err != nil {
 		log.Println(err)
-		return err
+		return "", err
 	}
 
 	return s.repo.InsertOS(os)
+}
+
+func (s *Service) InsertAnexos(ordem string, filename string, file []byte) error {
+	return s.repo.InsertAnexos(ordem, filename, file)
 }

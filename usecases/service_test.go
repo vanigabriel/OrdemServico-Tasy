@@ -18,7 +18,7 @@ func TestInsertOS(t *testing.T) {
 		Contato:   "7744",
 	}
 
-	err := s.InsertOS(os)
+	_, err := s.InsertOS(os)
 
 	assert.Nil(t, err)
 
@@ -27,7 +27,7 @@ func TestInsertOS(t *testing.T) {
 		NrCPF: "12345678912",
 	}
 
-	err = s.InsertOS(os2)
+	_, err = s.InsertOS(os2)
 
 	assert.NotNil(t, err)
 }
