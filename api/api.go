@@ -73,4 +73,5 @@ func PostOS(service *ordem.Service) func(c *gin.Context) {
 		
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
+	}
 }
