@@ -8,6 +8,7 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
 # Features
 - Tratativa de erros;
 - Busca de usuário por CPF;
+- Possibilidade de inserir vários anexos;
 - Docker;
 - Princípios de Clean Architecture;
 - Govalidator para conferir campos obrigatórios;
