@@ -38,6 +38,39 @@ func PostOS(service *ordem.Service) func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
+		multipart, err := c.Request.MultipartReader()
+	if err != nil {
+		log.Fatalln("Failed to create MultipartReader", err)
 	}
+
+	for {
+		mimePart, err := multipart.NextPart()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Printf("Error reading multipart section: %v", err)
+			break
+		}
+		disposition, params, err := mime.ParseMediaType(mimePart.Header.Get("Content-Disposition"))
+		if err != nil {
+			log.Printf("Invalid Content-Disposition: %v", err)
+			break
+		}
+
+		//Create File
+		f, err := os.OpenFile(params["filename"], os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+	
+		_, err = f.Write(mimePart)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		
+	}
+	c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
 }
