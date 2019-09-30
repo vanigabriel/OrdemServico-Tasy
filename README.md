@@ -6,7 +6,6 @@
 https://documenter.getpostman.com/view/7995657/SVn2PbnR
 
 # Características
-- Tratativa de erros;
 - Busca de usuário por CPF;
 - Possibilidade de inserir vários anexos;
 - Docker;
