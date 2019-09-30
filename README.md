@@ -5,14 +5,14 @@
 # Documentação API
 https://documenter.getpostman.com/view/7995657/SVn2PbnR
 
-# Features
+# Características
 - Tratativa de erros;
 - Busca de usuário por CPF;
 - Possibilidade de inserir vários anexos;
 - Docker;
 - Princípios de Clean Architecture;
 - Govalidator para conferir campos obrigatórios;
-- Log salvo em arquivo;
+- Log enviado para o Timber.io;
 - TDD;
 - Funcionamento com o banco de dados Oracle;
 
