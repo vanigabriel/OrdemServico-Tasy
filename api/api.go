@@ -103,3 +103,4 @@ func PostFiles(service *ordem.Service, log *timber.Client) func(c *gin.Context) 
 		c.JSON(http.StatusCreated, gin.H{"message": "Processado sem erros."})
 	}
 }
+
