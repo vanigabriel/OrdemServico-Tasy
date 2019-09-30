@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/evalphobia/go-timber/timber"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
@@ -27,7 +28,19 @@ func TestPostOS(t *testing.T) {
 	repo := ordem.NewInmemRepository()
 	s := ordem.NewService(repo)
 
-	router := SetupRouter(s)
+	conf := timber.Config{
+		APIKey:         "",
+		SourceID:       "",
+		CustomEndpoint: "https://logs.timber.io",
+		Environment:    "production",
+		MinimumLevel:   timber.LogLevelInfo,
+		Sync:           true,
+		Debug:          true,
+	}
+
+	log, err := timber.New(conf)
+
+	router := SetupRouter(s, log)
 
 	// Resposta quando deu certo
 	body := gin.H{
@@ -52,7 +65,7 @@ func TestPostOS(t *testing.T) {
 
 	// Converte resposta para um MAP
 	var response map[string]string
-	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	err = json.Unmarshal([]byte(w.Body.String()), &response)
 
 	// Recupera a tag message e verifica se existe
 	value, exists := response["message"]
