@@ -53,6 +53,7 @@ func (r *RepoOracle) InsertOS(os *entity.OrdemServico) (string, error) {
 		log.Println(err)
 		return "", err
 	}
+	defer r.closeDB()
 
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -99,6 +100,7 @@ func (r *RepoOracle) InsertAnexos(ordem string, filename string, file []byte) er
 		log.Println(err)
 		return err
 	}
+	defer r.closeDB()
 
 	var filepath string
 
