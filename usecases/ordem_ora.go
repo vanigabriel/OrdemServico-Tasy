@@ -102,6 +102,16 @@ func (r *RepoOracle) InsertAnexos(ordem string, filename string, file []byte) er
 	}
 	defer r.closeDB()
 
+	// Valida se a OS existe
+	sqlV := `select 1
+			from man_ordem_servico a
+			where a.nr_sequencia = :col1`
+
+	if !rowExists(sqlV, r.db, ordem) {
+		log.Println("Ordem de serviço inexistente")
+		return errors.New("Ordem de serviço inexistente")
+	}
+
 	var filepath string
 
 	sqlS := `select a.vl_parametro
