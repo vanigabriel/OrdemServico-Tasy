@@ -1,2 +1,5 @@
 
 .env
+*.log
+*.pdf
+__debug_bin
