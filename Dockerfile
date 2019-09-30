@@ -1,8 +1,6 @@
 # Start from the latest golang base image
 FROM golang:latest
 
-RUN git config --global url."https://a772917e9678a1a887b9dfa760cef16e0a58bb39:@github.com/".insteadOf "https://github.com/"
-
 # Install application
 RUN go get github.com/vanigabriel/OrdemServico-Tasy
 CMD ["pwd"]
