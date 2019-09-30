@@ -31,3 +31,4 @@ https://documenter.getpostman.com/view/7995657/SVn2PbnR
  
 # Backlog
 - Usuário/Setor/Equipamento padrão quando não localizar o do CPF;
+- Abstrair a camada de log;
