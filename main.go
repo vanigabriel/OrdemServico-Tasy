@@ -1,11 +1,10 @@
 package main
 
 import (
-	"io"
 	"log"
 	"os"
-	"time"
 
+	"github.com/evalphobia/go-timber/timber"
 	"github.com/joho/godotenv"
 
 	"github.com/vanigabriel/OrdemServico-Tasy/api"
@@ -13,22 +12,28 @@ import (
 )
 
 //PORT port to be used
-const PORT = "9191"
-
-var f, _ = os.OpenFile("log_"+time.Now().Format("01-02-2006")+".log", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
+const PORT = "9292"
 
 func main() {
 	// Load env variables
 	handleError(godotenv.Load())
 
-	// Logging to a file.
-	wrt := io.MultiWriter(os.Stdout, f)
-	log.SetOutput(wrt)
-	defer f.Close()
+	conf := timber.Config{
+		APIKey:         os.Getenv("TIMBER_API_KEY"),
+		SourceID:       os.Getenv("TIMBER_SOURCE_ID"),
+		CustomEndpoint: "https://logs.timber.io",
+		Environment:    "production",
+		MinimumLevel:   timber.LogLevelInfo,
+		Sync:           true,
+		Debug:          true,
+	}
+
+	log, err := timber.New(conf)
+	handleError(err)
 
 	s := ordem.NewService(ordem.NewRepository())
 
-	r := api.SetupRouter(s)
+	r := api.SetupRouter(s, log)
 
 	r.Run(":" + PORT)
 
